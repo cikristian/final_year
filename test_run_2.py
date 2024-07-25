@@ -44,7 +44,7 @@ mean_6m_price_peak = st.sidebar.number_input('Mean 6M Price Peak', 0.00, 100000.
 mean_3m_price_peak = st.sidebar.number_input('Mean 3M Price Peak', 0.00, 100000.00)
 churn = st.sidebar.number_input('Churn', 0.00, 100.00)
 
-if st.sidebar.button('Predict number of consultants'):
+if st.sidebar.button('Predict'):
     a_q = predict(cons_last_month, forecast_cons_12m, mean_6m_price_peak,
                   mean_3m_price_peak, churn, date_trained_diff, channel_sales_encoded)
     if a_q is not None:
