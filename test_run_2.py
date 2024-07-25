@@ -35,7 +35,7 @@ def predict(cons_last_month, forecast_cons_12m, mean_6m_price_peak,
         return None
 
 # Input fields for prediction
-st.sidebar.header("Prediction Input")
+st.sidebar.header("Market forcast")
 channel_sales_encoded = st.sidebar.number_input('Channel Sales Encoded', 0, 5)
 date_trained_diff = st.sidebar.number_input('Date Trained Difference', 0, 10000)
 cons_last_month = st.sidebar.number_input('Consumption Last Month', 0, 1000)
