@@ -59,43 +59,48 @@ if uploaded_file is not None:
     st.header("Dataset")
     st.write(df)
 
+    # Prepare numeric columns for visualizations
+    numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
+
     # Visualizations
     st.header("Visualizations")
     
-    visualization_type = st.selectbox(
-        "Select a visualization type",
-        ["Histogram", "Scatter Plot", "Line Chart", "Correlation Heatmap"]
-    )
-
-    if visualization_type == "Histogram":
-        st.subheader("Histogram")
-        column = st.selectbox("Select a column for histogram", df.columns)
+    # Histogram
+    st.subheader("Histogram")
+    for column in numeric_columns:
         fig, ax = plt.subplots()
         ax.hist(df[column], bins=20, edgecolor='k')
+        ax.set_title(f'Histogram of {column}')
         st.pyplot(fig)
-    
-    elif visualization_type == "Scatter Plot":
-        st.subheader("Scatter Plot")
-        x_col = st.selectbox("Select X-axis for scatter plot", df.columns, key='x_col')
-        y_col = st.selectbox("Select Y-axis for scatter plot", df.columns, key='y_col')
+
+    # Scatter Plot
+    st.subheader("Scatter Plot")
+    if len(numeric_columns) >= 2:
+        x_col = st.selectbox("Select X-axis for scatter plot", numeric_columns, key='x_col')
+        y_col = st.selectbox("Select Y-axis for scatter plot", numeric_columns, key='y_col')
         fig, ax = plt.subplots()
         ax.scatter(df[x_col], df[y_col])
         ax.set_xlabel(x_col)
         ax.set_ylabel(y_col)
+        ax.set_title(f'Scatter Plot: {x_col} vs {y_col}')
         st.pyplot(fig)
+    else:
+        st.warning("Not enough numeric columns for scatter plot.")
     
-    elif visualization_type == "Line Chart":
-        st.subheader("Line Chart")
-        line_col = st.selectbox("Select a column for line chart", df.columns)
-        st.line_chart(df[line_col])
+    # Line Chart
+    st.subheader("Line Chart")
+    for column in numeric_columns:
+        fig, ax = plt.subplots()
+        ax.plot(df[column])
+        ax.set_title(f'Line Chart of {column}')
+        st.pyplot(fig)
 
-    elif visualization_type == "Correlation Heatmap":
-        st.subheader("Correlation Heatmap")
-        # Filter only numeric columns
-        numeric_df = df.select_dtypes(include=[np.number])
-        if numeric_df.empty:
-            st.warning("No numeric columns found in the dataset.")
-        else:
-            fig, ax = plt.subplots()
-            sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', ax=ax)
-            st.pyplot(fig)
+    # Correlation Heatmap
+    st.subheader("Correlation Heatmap")
+    if not numeric_columns:
+        st.warning("No numeric columns found in the dataset.")
+    else:
+        fig, ax = plt.subplots()
+        sns.heatmap(df[numeric_columns].corr(), annot=True, cmap='coolwarm', ax=ax)
+        ax.set_title('Correlation Heatmap')
+        st.pyplot(fig)
